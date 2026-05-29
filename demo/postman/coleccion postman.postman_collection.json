@@ -1,0 +1,385 @@
+{
+    "info":  {
+                 "_postman_id":  "cfe38052-b4fd-46a3-86a0-fda6fb913144",
+                 "name":  "coleccion postman",
+                 "schema":  "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+                 "_exporter_id":  "50383672",
+                 "_collection_link":  "https://go.postman.co/collection/50383672-cfe38052-b4fd-46a3-86a0-fda6fb913144?source=collection_link"
+             },
+    "item":  [
+                 {
+                     "name":  "Crear una persona",
+                     "event":  [
+                                   {
+                                       "listen":  "prerequest",
+                                       "script":  {
+                                                      "exec":  [
+                                                                   "const nombreCsv = pm.iterationData.get(\"nombre\");",
+                                                                   "const apellidoCsv = pm.iterationData.get(\"apellido\");",
+                                                                   "const numeroCsv = pm.iterationData.get(\"numero\");",
+                                                                   "",
+                                                                   "if (nombreCsv \u0026\u0026 apellidoCsv \u0026\u0026 numeroCsv) {",
+                                                                   "    pm.collectionVariables.set(\"tempNombre\", nombreCsv);",
+                                                                   "    pm.collectionVariables.set(\"tempApellido\", apellidoCsv);",
+                                                                   "    pm.collectionVariables.set(\"tempNumero\", String(numeroCsv));",
+                                                                   "} else {",
+                                                                   "    const randomSuffix = Math.floor(Math.random() * 900000 + 100000);",
+                                                                   "    pm.collectionVariables.set(\"tempNombre\", \"Juan\" + randomSuffix);",
+                                                                   "    pm.collectionVariables.set(\"tempApellido\", \"Perez\" + randomSuffix);",
+                                                                   "    pm.collectionVariables.set(\"tempNumero\", \"300\" + randomSuffix);",
+                                                                   "}"
+                                                               ],
+                                                      "type":  "text/javascript",
+                                                      "packages":  {
+
+                                                                   },
+                                                      "requests":  {
+
+                                                                   }
+                                                  }
+                                   },
+                                   {
+                                       "listen":  "test",
+                                       "script":  {
+                                                      "exec":  [
+                                                                   "pm.test(\"Status 201 Created\", function () {",
+                                                                   "    pm.response.to.have.status(201);",
+                                                                   "});",
+                                                                   "",
+                                                                   "const body = pm.response.json();",
+                                                                   "pm.collectionVariables.set(\"personaId\", body.id);",
+                                                                   "",
+                                                                   "pm.test(\"La persona creada coincide con los datos enviados\", function () {",
+                                                                   "    pm.expect(body.nombre).to.eql(pm.collectionVariables.get(\"tempNombre\"));",
+                                                                   "    pm.expect(body.apellido).to.eql(pm.collectionVariables.get(\"tempApellido\"));",
+                                                                   "    pm.expect(body.numero).to.eql(pm.collectionVariables.get(\"tempNumero\"));",
+                                                                   "});"
+                                                               ],
+                                                      "type":  "text/javascript",
+                                                      "packages":  {
+
+                                                                   },
+                                                      "requests":  {
+
+                                                                   }
+                                                  }
+                                   }
+                               ],
+                     "request":  {
+                                     "method":  "POST",
+                                     "header":  [
+
+                                                ],
+                                     "body":  {
+                                                  "mode":  "raw",
+                                                  "raw":  "{\r\n  \"nombre\": \"{{tempNombre}}\",\r\n  \"apellido\": \"{{tempApellido}}\",\r\n  \"numero\": \"{{tempNumero}}\"\r\n}",
+                                                  "options":  {
+                                                                  "raw":  {
+                                                                              "language":  "json"
+                                                                          }
+                                                              }
+                                              },
+                                     "url":  {
+                                                 "raw":  "{{baseUrl}}/api/personas",
+                                                 "host":  [
+                                                              "{{baseUrl}}"
+                                                          ],
+                                                 "path":  [
+                                                              "api",
+                                                              "personas"
+                                                          ]
+                                             }
+                                 },
+                     "response":  [
+
+                                  ]
+                 },
+                 {
+                     "name":  "Listar todas las Personas",
+                     "event":  [
+                                   {
+                                       "listen":  "test",
+                                       "script":  {
+                                                      "exec":  [
+                                                                   "pm.test(\"Status 200 OK\", function () {\r",
+                                                                   "    pm.response.to.have.status(200);\r",
+                                                                   "});\r",
+                                                                   "\r",
+                                                                   "pm.test(\"Estructura de Contrato - El resultado debe ser un array de objetos con el formato correcto\", function () {\r",
+                                                                   "    const body = pm.response.json();\r",
+                                                                   "    pm.expect(body).to.be.an(\"array\");\r",
+                                                                   "    \r",
+                                                                   "    if(body.length \u003e 0) {\r",
+                                                                   "        const primerElemento = body[0];\r",
+                                                                   "        pm.expect(primerElemento).to.have.all.keys(\"id\", \"nombre\", \"apellido\", \"numero\");\r",
+                                                                   "        pm.expect(primerElemento.id).to.be.a(\"number\");\r",
+                                                                   "        pm.expect(primerElemento.nombre).to.be.a(\"string\");\r",
+                                                                   "    }\r",
+                                                                   "});"
+                                                               ],
+                                                      "type":  "text/javascript",
+                                                      "packages":  {
+
+                                                                   },
+                                                      "requests":  {
+
+                                                                   }
+                                                  }
+                                   }
+                               ],
+                     "request":  {
+                                     "method":  "GET",
+                                     "header":  [
+
+                                                ],
+                                     "url":  {
+                                                 "raw":  "{{baseUrl}}/api/personas",
+                                                 "host":  [
+                                                              "{{baseUrl}}"
+                                                          ],
+                                                 "path":  [
+                                                              "api",
+                                                              "personas"
+                                                          ]
+                                             }
+                                 },
+                     "response":  [
+
+                                  ]
+                 },
+                 {
+                     "name":  "Buscar Persona por ID",
+                     "event":  [
+                                   {
+                                       "listen":  "test",
+                                       "script":  {
+                                                      "exec":  [
+                                                                   "pm.test(\"Status 200 OK\", function () {\r",
+                                                                   "    pm.response.to.have.status(200);\r",
+                                                                   "});\r",
+                                                                   "\r",
+                                                                   "pm.test(\"La respuesta corresponde al ID solicitado\", function () {\r",
+                                                                   "    const body = pm.response.json();\r",
+                                                                   "    pm.expect(body.id).to.eql(Number(pm.collectionVariables.get(\"personaId\")));\r",
+                                                                   "});"
+                                                               ],
+                                                      "type":  "text/javascript",
+                                                      "packages":  {
+
+                                                                   },
+                                                      "requests":  {
+
+                                                                   }
+                                                  }
+                                   }
+                               ],
+                     "request":  {
+                                     "method":  "GET",
+                                     "header":  [
+
+                                                ],
+                                     "url":  {
+                                                 "raw":  "{{baseUrl}}/api/personas/{{personaId}}",
+                                                 "host":  [
+                                                              "{{baseUrl}}"
+                                                          ],
+                                                 "path":  [
+                                                              "api",
+                                                              "personas",
+                                                              "{{personaId}}"
+                                                          ]
+                                             }
+                                 },
+                     "response":  [
+
+                                  ]
+                 },
+                 {
+                     "name":  "Error - Crear Persona sin Nombre",
+                     "event":  [
+                                   {
+                                       "listen":  "test",
+                                       "script":  {
+                                                      "exec":  [
+                                                                   "pm.test(\"Status 400 Bad Request\", function () {\r",
+                                                                   "    pm.response.to.have.status(400);\r",
+                                                                   "});\r",
+                                                                   "\r",
+                                                                   "pm.test(\"ValidaciÃ³n de Mensaje: Nombre obligatorio\", function () {\r",
+                                                                   "    const body = pm.response.json();\r",
+                                                                   "    pm.expect(body.nombre).to.eql(\"El nombre es obligatorio\");\r",
+                                                                   "});"
+                                                               ],
+                                                      "type":  "text/javascript",
+                                                      "packages":  {
+
+                                                                   },
+                                                      "requests":  {
+
+                                                                   }
+                                                  }
+                                   }
+                               ],
+                     "request":  {
+                                     "method":  "POST",
+                                     "header":  [
+
+                                                ],
+                                     "body":  {
+                                                  "mode":  "raw",
+                                                  "raw":  "{\r\n  \"nombre\": \"\",\r\n  \"apellido\": \"Gomez\",\r\n  \"numero\": \"12345678\"\r\n}",
+                                                  "options":  {
+                                                                  "raw":  {
+                                                                              "language":  "json"
+                                                                          }
+                                                              }
+                                              },
+                                     "url":  {
+                                                 "raw":  "{{baseUrl}}/api/personas",
+                                                 "host":  [
+                                                              "{{baseUrl}}"
+                                                          ],
+                                                 "path":  [
+                                                              "api",
+                                                              "personas"
+                                                          ]
+                                             }
+                                 },
+                     "response":  [
+
+                                  ]
+                 },
+                 {
+                     "name":  "Nombre demasiado corto",
+                     "event":  [
+                                   {
+                                       "listen":  "test",
+                                       "script":  {
+                                                      "exec":  [
+                                                                   "pm.test(\"Status 400 Bad Request\", function () {\r",
+                                                                   "    pm.response.to.have.status(400);\r",
+                                                                   "});\r",
+                                                                   "\r",
+                                                                   "pm.test(\"ValidaciÃ³n de Mensaje: Longitud del nombre\", function () {\r",
+                                                                   "    const body = pm.response.json();\r",
+                                                                   "    pm.expect(body.nombre).to.eql(\"El nombre debe tener entre 2 y 60 caracteres\");\r",
+                                                                   "});"
+                                                               ],
+                                                      "type":  "text/javascript",
+                                                      "packages":  {
+
+                                                                   },
+                                                      "requests":  {
+
+                                                                   }
+                                                  }
+                                   }
+                               ],
+                     "request":  {
+                                     "method":  "POST",
+                                     "header":  [
+
+                                                ],
+                                     "body":  {
+                                                  "mode":  "raw",
+                                                  "raw":  "{\r\n  \"nombre\": \"A\",\r\n  \"apellido\": \"Gomez\",\r\n  \"numero\": \"12345678\"\r\n}",
+                                                  "options":  {
+                                                                  "raw":  {
+                                                                              "language":  "json"
+                                                                          }
+                                                              }
+                                              },
+                                     "url":  {
+                                                 "raw":  "{{baseUrl}}/api/personas",
+                                                 "host":  [
+                                                              "{{baseUrl}}"
+                                                          ],
+                                                 "path":  [
+                                                              "api",
+                                                              "personas"
+                                                          ]
+                                             }
+                                 },
+                     "response":  [
+
+                                  ]
+                 },
+                 {
+                     "name":  "Error - NÃºmero con caracteres no permitidos",
+                     "event":  [
+                                   {
+                                       "listen":  "test",
+                                       "script":  {
+                                                      "exec":  [
+                                                                   "pm.test(\"Status 400 Bad Request\", function () {\r",
+                                                                   "    pm.response.to.have.status(400);\r",
+                                                                   "});\r",
+                                                                   "\r",
+                                                                   "pm.test(\"ValidaciÃ³n de Mensaje: Formato de nÃºmero\", function () {\r",
+                                                                   "    const body = pm.response.json();\r",
+                                                                   "    pm.expect(body.numero).to.eql(\"El numero debe contener entre 7 y 15 digitos\");\r",
+                                                                   "});"
+                                                               ],
+                                                      "type":  "text/javascript",
+                                                      "packages":  {
+
+                                                                   },
+                                                      "requests":  {
+
+                                                                   }
+                                                  }
+                                   }
+                               ],
+                     "request":  {
+                                     "method":  "POST",
+                                     "header":  [
+
+                                                ],
+                                     "body":  {
+                                                  "mode":  "raw",
+                                                  "raw":  "{\r\n  \"nombre\": \"Ana\",\r\n  \"apellido\": \"Gomez\",\r\n  \"numero\": \"300-123-abc\"\r\n}",
+                                                  "options":  {
+                                                                  "raw":  {
+                                                                              "language":  "json"
+                                                                          }
+                                                              }
+                                              },
+                                     "url":  {
+                                                 "raw":  "{{baseUrl}}/api/personas",
+                                                 "host":  [
+                                                              "{{baseUrl}}"
+                                                          ],
+                                                 "path":  [
+                                                              "api",
+                                                              "personas"
+                                                          ]
+                                             }
+                                 },
+                     "response":  [
+
+                                  ]
+                 }
+             ],
+    "variable":  [
+                     {
+                         "key":  "baseUrl",
+                         "value":  "http://localhost:8080"
+                     },
+                     {
+                         "key":  "tempNombre",
+                         "value":  ""
+                     },
+                     {
+                         "key":  "tempApellido",
+                         "value":  ""
+                     },
+                     {
+                         "key":  "tempNumero",
+                         "value":  ""
+                     },
+                     {
+                         "key":  "personaId",
+                         "value":  ""
+                     }
+                 ]
+}

@@ -1,0 +1,17 @@
+{
+  "name": "demo-postman-newman",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Automatizacion de pruebas Postman con Newman para la API Personas.",
+  "scripts": {
+    "newman:personas": "newman run postman/personas.postman_collection.json --env-var baseUrl=http://localhost:8080",
+    "newman:coleccion": "newman run \"postman/coleccion postman.postman_collection.json\" --env-var baseUrl=http://localhost:8080",
+    "newman:coleccion:csv": "newman run \"postman/coleccion postman.postman_collection.json\" --folder \"Crear una persona\" -d data/personas.csv --env-var baseUrl=http://localhost:8080",
+    "newman:csv": "newman run postman/personas-data-driven.postman_collection.json -d data/personas.csv --env-var baseUrl=http://localhost:8080",
+    "newman:report": "newman run postman/personas.postman_collection.json -r cli,htmlextra,json,junit --reporter-htmlextra-export newman/reporte.html --reporter-json-export newman/resultados.json --reporter-junit-export newman/resultados.xml --env-var baseUrl=http://localhost:8080"
+  },
+  "devDependencies": {
+    "newman": "^6.2.1",
+    "newman-reporter-htmlextra": "^1.23.1"
+  }
+}

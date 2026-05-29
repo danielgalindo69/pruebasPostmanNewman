@@ -1,0 +1,61 @@
+{
+	"info": {
+		"name": "Personas API - Data Driven",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Crear persona desde CSV",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"nombre\": \"{{nombre}}\",\n  \"apellido\": \"{{apellido}}\",\n  \"numero\": \"{{numero}}\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/personas",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"personas"
+					]
+				}
+			},
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"status 201\", function () {",
+							"  pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"crea la persona enviada desde CSV\", function () {",
+							"  const body = pm.response.json();",
+							"  pm.expect(body).to.have.property(\"id\");",
+							"  pm.expect(body.nombre).to.eql(pm.iterationData.get(\"nombre\"));",
+							"  pm.expect(body.apellido).to.eql(pm.iterationData.get(\"apellido\"));",
+							"  pm.expect(body.numero).to.eql(String(pm.iterationData.get(\"numero\")));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080"
+		}
+	]
+}

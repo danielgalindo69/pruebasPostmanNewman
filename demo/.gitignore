@@ -1,5 +1,7 @@
 HELP.md
 target/
+node_modules/
+newman/
 .env
 .env.*
 !.env.example
